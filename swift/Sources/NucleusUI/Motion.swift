@@ -1,14 +1,6 @@
 import SwiftUI
 import UIKit
 
-public enum NucleusMotion {
-    /// `--nuc-ease`: cubic-bezier(0.22, 1, 0.36, 1).
-    public static let ease = Animation.timingCurve(0.22, 1, 0.36, 1, duration: 0.5)
-    public static let quick = Animation.timingCurve(0.22, 1, 0.36, 1, duration: 0.3)
-    /// `--nuc-step`: the delay between staggered children.
-    public static let step: Double = 0.055
-}
-
 public extension View {
     /// `nuc-in` / `nuc-stagger`: fade up 12pt on first appearance, delayed by `index` steps.
     func nucleusAppear(_ index: Int = 0) -> some View {

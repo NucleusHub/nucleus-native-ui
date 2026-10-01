@@ -24,8 +24,8 @@ public struct NucleusSection<Content: View>: View {
                     .padding(.bottom, 8)
             }
             SeparatedRows { content }
-            .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
-            .nucleusGlass(cornerRadius: 26)
+            .clipShape(RoundedRectangle(cornerRadius: NucleusRadius.card, style: .continuous))
+            .nucleusGlass(cornerRadius: NucleusRadius.card)
 
             if let footer {
                 footer
@@ -230,7 +230,7 @@ public struct NucleusField: View {
             .autocorrectionDisabled()
             .padding(.horizontal, 12)
             .padding(.vertical, 11)
-            .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(Nucleus.well))
+            .background(RoundedRectangle(cornerRadius: NucleusRadius.field, style: .continuous).fill(Nucleus.well))
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)

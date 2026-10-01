@@ -152,7 +152,7 @@ public struct SymbolPicker: View {
                         .frame(maxWidth: .infinity)
                         .frame(height: 42)
                         .background {
-                            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            RoundedRectangle(cornerRadius: NucleusRadius.field, style: .continuous)
                                 .fill(symbol == selection ? AnyShapeStyle(tint.gradient) : AnyShapeStyle(Nucleus.well))
                         }
                 }

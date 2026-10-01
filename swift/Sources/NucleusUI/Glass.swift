@@ -6,7 +6,7 @@ public extension View {
         modifier(NucleusGlassModifier(shape: shape, interactive: interactive))
     }
 
-    func nucleusGlass(cornerRadius: CGFloat = 26, interactive: Bool = false) -> some View {
+    func nucleusGlass(cornerRadius: CGFloat = NucleusRadius.card, interactive: Bool = false) -> some View {
         nucleusGlass(in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous), interactive: interactive)
     }
 }

@@ -33,7 +33,7 @@ public struct NucleusSegmented<Value: Hashable>: View {
                         .frame(maxWidth: fill ? .infinity : nil)
                         .background {
                             if active {
-                                RoundedRectangle(cornerRadius: 9, style: .continuous)
+                                RoundedRectangle(cornerRadius: NucleusRadius.segmentPill, style: .continuous)
                                     .fill(Color(light: .white, dark: .white.opacity(0.15)))
                                     .shadow(color: .black.opacity(0.08), radius: 1.5, y: 1)
                                     .matchedGeometryEffect(id: "pill", in: pill)
@@ -46,7 +46,7 @@ public struct NucleusSegmented<Value: Hashable>: View {
         }
         .animation(NucleusMotion.quick, value: selection)
         .padding(4)
-        .background(RoundedRectangle(cornerRadius: 13, style: .continuous).fill(Color(light: .black.opacity(0.04), dark: .white.opacity(0.05))))
+        .background(RoundedRectangle(cornerRadius: NucleusRadius.segmentTrack, style: .continuous).fill(Color(light: .black.opacity(0.04), dark: .white.opacity(0.05))))
     }
 }
 

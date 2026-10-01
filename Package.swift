@@ -8,6 +8,6 @@ let package = Package(
         .library(name: "NucleusUI", targets: ["NucleusUI"]),
     ],
     targets: [
-        .target(name: "NucleusUI"),
+        .target(name: "NucleusUI", path: "swift/Sources/NucleusUI"),
     ]
 )
