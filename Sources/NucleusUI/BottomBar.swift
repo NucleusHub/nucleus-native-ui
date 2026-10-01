@@ -23,7 +23,7 @@ public struct NucleusSearchBar: View {
     }
 
     public var body: some View {
-        GlassEffectContainer(spacing: 8) {
+        NucleusGlassContainer(spacing: 8) {
             HStack(spacing: 8) {
                 HStack(spacing: 10) {
                     Image(systemName: "magnifyingglass")

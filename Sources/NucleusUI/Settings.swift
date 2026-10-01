@@ -23,19 +23,7 @@ public struct NucleusSection<Content: View>: View {
                     .padding(.horizontal, 16)
                     .padding(.bottom, 8)
             }
-            VStack(spacing: 0) {
-                Group(subviews: content) { subviews in
-                    ForEach(Array(subviews.enumerated()), id: \.element.id) { index, subview in
-                        if index > 0 {
-                            Rectangle()
-                                .fill(Nucleus.separator)
-                                .frame(height: 1)
-                                .padding(.leading, 16)
-                        }
-                        subview
-                    }
-                }
-            }
+            SeparatedRows { content }
             .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
             .nucleusGlass(cornerRadius: 26)
 
@@ -49,6 +37,51 @@ public struct NucleusSection<Content: View>: View {
             }
         }
         .padding(.bottom, 28)
+    }
+}
+
+/// Rows with a hairline between each, as in a grouped list.
+struct SeparatedRows<Content: View>: View {
+    let content: Content
+
+    init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
+
+    var body: some View {
+        if #available(iOS 18, *) {
+            VStack(spacing: 0) {
+                Group(subviews: content) { subviews in
+                    ForEach(Array(subviews.enumerated()), id: \.element.id) { index, subview in
+                        if index > 0 { RowSeparator() }
+                        subview
+                    }
+                }
+            }
+        } else {
+            // iOS 17 has no public way to walk subviews; the variadic view tree is what Group(subviews:) replaced.
+            _VariadicView.Tree(SeparatedLayout()) { content }
+        }
+    }
+}
+
+private struct RowSeparator: View {
+    var body: some View {
+        Rectangle()
+            .fill(Nucleus.separator)
+            .frame(height: 1)
+            .padding(.leading, 16)
+    }
+}
+
+private struct SeparatedLayout: _VariadicView_MultiViewRoot {
+    func body(children: _VariadicView.Children) -> some View {
+        VStack(spacing: 0) {
+            ForEach(children) { child in
+                if child.id != children.first?.id { RowSeparator() }
+                child
+            }
+        }
     }
 }
 

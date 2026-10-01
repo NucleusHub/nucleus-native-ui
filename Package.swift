@@ -3,7 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "NucleusUI",
-    platforms: [.iOS(.v26)],
+    platforms: [.iOS(.v17)],
     products: [
         .library(name: "NucleusUI", targets: ["NucleusUI"]),
     ],

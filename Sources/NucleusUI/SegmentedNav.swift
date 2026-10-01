@@ -25,8 +25,10 @@ public struct NucleusSegmented<Value: Hashable>: View {
                     Text(item.title)
                         .font(.system(size: 14, weight: .medium))
                         .lineLimit(1)
+                        .minimumScaleFactor(0.8)
                         .foregroundStyle(active ? Nucleus.primaryText : Nucleus.secondaryText)
-                        .padding(.horizontal, 14)
+                        // Filling a row, the segments share its width; tight padding keeps labels whole.
+                        .padding(.horizontal, fill ? 6 : 14)
                         .padding(.vertical, 7)
                         .frame(maxWidth: fill ? .infinity : nil)
                         .background {

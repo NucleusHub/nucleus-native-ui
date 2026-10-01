@@ -18,7 +18,36 @@ private struct NucleusGlassModifier<S: Shape>: ViewModifier {
 
     func body(content: Content) -> some View {
         let tint = scheme == .dark ? Color(hex: 0x0E0A1C, opacity: 0.35) : Color.white.opacity(0.25)
-        content.glassEffect(interactive ? .regular.tint(tint).interactive() : .regular.tint(tint), in: shape)
+        if #available(iOS 26, *) {
+            content.glassEffect(interactive ? .regular.tint(tint).interactive() : .regular.tint(tint), in: shape)
+        } else {
+            // Before Liquid Glass: a blurred material with the same tint and a hairline edge.
+            content.background {
+                shape.fill(.ultraThinMaterial)
+                    .overlay(shape.fill(tint))
+                    .overlay(shape.stroke(Color.white.opacity(scheme == .dark ? 0.12 : 0.5), lineWidth: 0.5))
+                    .shadow(color: .black.opacity(scheme == .dark ? 0.3 : 0.08), radius: 12, y: 4)
+            }
+        }
+    }
+}
+
+/// `GlassEffectContainer` where Liquid Glass exists, so neighbouring glass shapes blend; plain content before it.
+public struct NucleusGlassContainer<Content: View>: View {
+    let spacing: CGFloat
+    let content: Content
+
+    public init(spacing: CGFloat = 8, @ViewBuilder content: () -> Content) {
+        self.spacing = spacing
+        self.content = content()
+    }
+
+    public var body: some View {
+        if #available(iOS 26, *) {
+            GlassEffectContainer(spacing: spacing) { content }
+        } else {
+            content
+        }
     }
 }
 
