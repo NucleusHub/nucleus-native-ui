@@ -40,7 +40,7 @@ Shell (`apps/shell`) and Watchlist (`apps/watchlist/ios`) are built on it.
 | `.onHorizontalSwipe(_:perform:)` | `useSwipeTabs.js` | Swipe between tabs, also over scroll views |
 | `.nucleusAppear(i)`, `NucleusPressStyle`, `Haptics` | `motion.css` (`nuc-in`, `nuc-stagger`, `nuc-press`) | Consistent easing and staggered entrances |
 | `AppearanceMode` | `useTheme.js` | System / Light / Dark, defaulting to dark like the web apps |
-| `NucleusTheme`, `NucleusAccent`, `NucleusAccentPicker`, `.nucleusAccentTint()` | nucleus-web `configurator.js`, `useAppearance.js` | The accent presets (Nucleus, Midnight, Arctic, Ember, Forest) or a custom colour. `NucleusTheme.shared.app` is the app's own (sync it with the app's data); `.account` is the Nucleus ID account's (`appearance` in `/oauth/userinfo`, set with `PUT /oauth/appearance`) and wins while set. `Nucleus.accent`, `primaryGradient`, glass and the background follow it |
+| `NucleusTheme`, `NucleusAccent`, `NucleusAccountTheme`, `NucleusAccentPicker`, `.nucleusAccentTint()` | nucleus-web `configurator.js`, `useAppearance.js` | The accent presets (Nucleus, Midnight, Arctic, Ember, Forest) or a custom colour. `NucleusTheme.shared.app` is the app's own and what is shown (sync it with the app's data). `.account` is the Nucleus ID account's theme (`appearance` in `/oauth/userinfo`, set with `PUT /oauth/appearance`); after a sync, `account.adoption(appPickedAt:)` says when the app should take it: when it never picked one, or when the account was pushed to every app since. `Nucleus.accent`, `primaryGradient`, glass and the background follow it |
 
 ### Starting a new Nucleus iOS app
 

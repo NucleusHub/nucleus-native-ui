@@ -39,30 +39,78 @@ public struct NucleusAccent: Hashable, Sendable, Identifiable {
     }
 }
 
-/// Which accent the app wears. Each app has its own, synced with its data; the account can set one
-/// for every app, which wins while it is set. Views that read `Nucleus.accent` or
-/// `Nucleus.primaryGradient` redraw when either changes. Both are cached per device, so the
-/// right colours are there from the first frame.
+/// The account's theme from Nucleus ID: what an app starts with, and when it was last pushed to
+/// every app (`appliedAt`).
+public struct NucleusAccountTheme: Hashable, Sendable {
+    public var accent: NucleusAccent
+    public var updatedAt: Date?
+    public var appliedAt: Date?
+
+    public init(accent: NucleusAccent, updatedAt: Date? = nil, appliedAt: Date? = nil) {
+        self.accent = accent
+        self.updatedAt = updatedAt
+        self.appliedAt = appliedAt
+    }
+
+    /// From the `appearance` object of `/oauth/userinfo`: `{ accent, customAccent?, updatedAt, appliedAt }`.
+    public init?(json: [String: Any]?) {
+        guard let json, let accent = NucleusAccent(id: json["accent"] as? String, customHex: json["customAccent"] as? String) else {
+            return nil
+        }
+        self.init(accent: accent, updatedAt: Self.date(json["updatedAt"]), appliedAt: Self.date(json["appliedAt"]))
+    }
+
+    /// What the app should switch to, given when its own accent was picked (nil: never). It starts
+    /// with the account's, and takes it again whenever the account is pushed to every app after that.
+    public func adoption(appPickedAt: Date?) -> NucleusAccent? {
+        guard let appPickedAt else { return accent }
+        guard let appliedAt, appliedAt > appPickedAt else { return nil }
+        return accent
+    }
+
+    static func date(_ value: Any?) -> Date? {
+        guard let s = value as? String else { return nil }
+        let f = ISO8601DateFormatter()
+        f.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return f.date(from: s) ?? ISO8601DateFormatter().date(from: s)
+    }
+
+    var json: [String: Any] {
+        var o: [String: Any] = ["accent": accent.id]
+        if let hex = accent.customHex { o["customAccent"] = hex }
+        let f = ISO8601DateFormatter()
+        f.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        if let updatedAt { o["updatedAt"] = f.string(from: updatedAt) }
+        if let appliedAt { o["appliedAt"] = f.string(from: appliedAt) }
+        return o
+    }
+}
+
+/// Which accent the app wears: its own, synced with its data. The account's theme is kept beside it
+/// for the settings screen and for `NucleusAccountTheme.adoption`. Views that read `Nucleus.accent`
+/// or `Nucleus.primaryGradient` redraw when it changes. Both are cached per device, so the right
+/// colours are there from the first frame.
 @Observable
 public final class NucleusTheme: @unchecked Sendable {
     public static let shared = NucleusTheme()
 
-    /// This app's own accent.
+    /// This app's own accent, which is what is on screen.
     public var app: NucleusAccent { didSet { save(app, as: Self.appKey) } }
-    /// The account-wide accent from Nucleus ID, or nil to let each app choose.
-    public var account: NucleusAccent? { didSet { save(account, as: Self.accountKey) } }
+    /// The signed-in account's theme, nil when signed out or never set.
+    public var account: NucleusAccountTheme? {
+        didSet { defaults.set(account?.json, forKey: Self.accountKey) }
+    }
 
-    /// What is on screen: the account's accent over the app's.
-    public var accent: NucleusAccent { account ?? app }
+    public var accent: NucleusAccent { app }
 
     @ObservationIgnored private let defaults: UserDefaults
     private static let appKey = "nucleus.accent"
-    private static let accountKey = "nucleus.accountAccent"
+    private static let accountKey = "nucleus.accountTheme"
 
     public init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         app = Self.load(Self.appKey, from: defaults) ?? .nucleus
-        account = Self.load(Self.accountKey, from: defaults)
+        account = NucleusAccountTheme(json: defaults.dictionary(forKey: Self.accountKey))
     }
 
     private func save(_ accent: NucleusAccent?, as key: String) {
