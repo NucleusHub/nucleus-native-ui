@@ -22,6 +22,13 @@ def color(value: str) -> str:
     return f"Color(hex: 0x{hex_}, opacity: {opacity})" if opacity else f"Color(hex: 0x{hex_})"
 
 
+def hexint(value: str) -> str:
+    """'#RRGGBB' as a 0xRRGGBB literal."""
+    if not re.fullmatch(r"#[0-9A-Fa-f]{6}", value):
+        raise SystemExit(f"bad color {value!r}")
+    return "0x" + value[1:].upper()
+
+
 def number(n) -> str:
     return repr(float(n)) if isinstance(n, float) else str(n)
 
@@ -33,13 +40,15 @@ def swift() -> str:
         if "doc" in c:
             out.append(f"    /// {c['doc']}")
         out.append(f"    public static let {name} = Color(light: {color(c['light'])}, dark: {color(c['dark'])})")
-    for name, (top, bottom) in TOKENS["gradients"].items():
+    gradients = {k: v for k, v in TOKENS["gradients"].items() if not k.startswith("$")}
+    for name, (top, bottom) in gradients.items():
         out += ["",
-                f"    public static let {name}Gradient = LinearGradient(",
-                f"        colors: [{color(top)}, {color(bottom)}],",
+                "    /// Turned to the current accent's hue.",
+                f"    public static var {name}Gradient: LinearGradient {{ LinearGradient(",
+                f"        colors: [{color(top)}.accentHue, {color(bottom)}.accentHue],",
                 "        startPoint: .topLeading,",
                 "        endPoint: .bottomTrailing",
-                "    )"]
+                "    ) }"]
     out += ["}", "", "/// Corner radii, in points.", "public enum NucleusRadius {"]
     out += [f"    public static let {k}: CGFloat = {number(v)}" for k, v in TOKENS["radii"].items()]
     m = TOKENS["motion"]
@@ -57,6 +66,12 @@ def swift() -> str:
     tints = {k: v for k, v in TOKENS["tints"].items() if not k.startswith("$")}
     out += [f"        case .{k}: ({color(top)}, {color(bottom)})" for k, (top, bottom) in tints.items()]
     out += ["        }", "    }", "}", ""]
+    accents = {k: v for k, v in TOKENS["accents"].items() if not k.startswith("$")}
+    out += ["public extension NucleusAccent {"]
+    for k, a in accents.items():
+        out.append(f'    static let {k} = NucleusAccent(id: "{k}", name: "{a["name"]}", '
+                   f'accent: {hexint(a["accent"])}, soft: {hexint(a["soft"])})')
+    out += ["", f"    static let presets: [NucleusAccent] = [{', '.join('.' + k for k in accents)}]", "}", ""]
     return "\n".join(out)
 
 

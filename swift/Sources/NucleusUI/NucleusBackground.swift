@@ -64,6 +64,8 @@ public struct NucleusBackground: View {
                 }
             }
             .frame(width: w, height: h)
+            // Drawn in the Nucleus purple and turned as one layer, like the web's --backdrop-shift.
+            .hueRotation(.degrees(NucleusTheme.shared.accent.hueShift))
             .clipped()
         }
         .ignoresSafeArea()

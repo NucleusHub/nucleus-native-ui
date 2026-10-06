@@ -40,13 +40,15 @@ Shell (`apps/shell`) and Watchlist (`apps/watchlist/ios`) are built on it.
 | `.onHorizontalSwipe(_:perform:)` | `useSwipeTabs.js` | Swipe between tabs, also over scroll views |
 | `.nucleusAppear(i)`, `NucleusPressStyle`, `Haptics` | `motion.css` (`nuc-in`, `nuc-stagger`, `nuc-press`) | Consistent easing and staggered entrances |
 | `AppearanceMode` | `useTheme.js` | System / Light / Dark, defaulting to dark like the web apps |
+| `NucleusTheme`, `NucleusAccent`, `NucleusAccentPicker`, `.nucleusAccentTint()` | nucleus-web `configurator.js`, `useAppearance.js` | The accent presets (Nucleus, Midnight, Arctic, Ember, Forest) or a custom colour. `NucleusTheme.shared.app` is the app's own (sync it with the app's data); `.account` is the Nucleus ID account's (`appearance` in `/oauth/userinfo`, set with `PUT /oauth/appearance`) and wins while set. `Nucleus.accent`, `primaryGradient`, glass and the background follow it |
 
 ### Starting a new Nucleus iOS app
 
 1. Copy `project.yml` from Shell, rename the target and bundle id (`com.nucleushome.<app>`).
 2. Add the package by URL: `NucleusUI: { url: https://github.com/NucleusHub/nucleus-native-ui, from: 0.1.0 }`.
 3. Use the same launch color (`#08060F` dark / `#F4F3FA` light) so nothing flashes on start.
-4. Default to dark (`AppearanceMode.dark`) and tint the app with `Nucleus.accent`.
+4. Default to dark (`AppearanceMode.dark`), put `.nucleusAccentTint()` on the root view and offer
+   `NucleusAccentPicker()` in Settings.
 5. Build screens from `NucleusPage` / `NucleusSheetPage` / `NucleusSection` rather than
    `List` and `Form`, so rows get the glass groups and spacing of the web settings pages.
 

@@ -4,8 +4,6 @@ import SwiftUI
 
 /// Design tokens shared by every Nucleus app.
 public enum Nucleus {
-    /// indigo-600 in light, violet-300 in dark: links, checkmarks, primary glyphs.
-    public static let accent = Color(light: Color(hex: 0x4F46E5), dark: Color(hex: 0xC4B5FD))
     public static let primaryText = Color(light: Color(hex: 0x0F172A), dark: Color(hex: 0xFFFFFF))
     /// slate-500 / white 45%.
     public static let secondaryText = Color(light: Color(hex: 0x64748B), dark: Color(hex: 0xFFFFFF, opacity: 0.45))
@@ -19,11 +17,12 @@ public enum Nucleus {
     /// The launch and base color, so nothing flashes between splash and first frame.
     public static let base = Color(light: Color(hex: 0xF4F3FA), dark: Color(hex: 0x08060F))
 
-    public static let primaryGradient = LinearGradient(
-        colors: [Color(hex: 0x6366F1), Color(hex: 0x8B5CF6)],
+    /// Turned to the current accent's hue.
+    public static var primaryGradient: LinearGradient { LinearGradient(
+        colors: [Color(hex: 0x6366F1).accentHue, Color(hex: 0x8B5CF6).accentHue],
         startPoint: .topLeading,
         endPoint: .bottomTrailing
-    )
+    ) }
 }
 
 /// Corner radii, in points.
@@ -59,4 +58,14 @@ public extension NucleusTint {
         case .slate: (Color(hex: 0x94A3B8), Color(hex: 0x64748B))
         }
     }
+}
+
+public extension NucleusAccent {
+    static let nucleus = NucleusAccent(id: "nucleus", name: "Nucleus", accent: 0xA855F7, soft: 0xC084FC)
+    static let midnight = NucleusAccent(id: "midnight", name: "Midnight", accent: 0x4F6BF6, soft: 0x8FA4FF)
+    static let arctic = NucleusAccent(id: "arctic", name: "Arctic", accent: 0x22B8CF, soft: 0x67E3F0)
+    static let ember = NucleusAccent(id: "ember", name: "Ember", accent: 0xF2711C, soft: 0xFFA463)
+    static let forest = NucleusAccent(id: "forest", name: "Forest", accent: 0x2FA36B, soft: 0x6EE7A8)
+
+    static let presets: [NucleusAccent] = [.nucleus, .midnight, .arctic, .ember, .forest]
 }

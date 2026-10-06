@@ -49,7 +49,7 @@ public struct NucleusWelcome<Hero: View, Footer: View>: View {
             VStack(spacing: 0) {
                 ZStack {
                     Circle()
-                        .fill(AngularGradient(colors: [Color(hex: 0x818CF8), Color(hex: 0xC084FC), Color(hex: 0xF472B6), Color(hex: 0x818CF8)], center: .center))
+                        .fill(AngularGradient(colors: [Color(hex: 0x818CF8), Color(hex: 0xC084FC), Color(hex: 0xF472B6), Color(hex: 0x818CF8)].map(\.accentHue), center: .center))
                         .frame(width: 240, height: 240)
                         .blur(radius: 48)
                         .opacity(0.5)
@@ -108,7 +108,7 @@ public struct NucleusWelcome<Hero: View, Footer: View>: View {
         .scrollBounceBehavior(.basedOnSize)
         .background {
             RadialGradient(
-                colors: [Color(light: Color(hex: 0x818CF8, opacity: 0.22), dark: Color(hex: 0x8B5CF6, opacity: 0.32)), .clear],
+                colors: [Color(light: Color(hex: 0x818CF8, opacity: 0.22).accentHue, dark: Color(hex: 0x8B5CF6, opacity: 0.32).accentHue), .clear],
                 center: .top,
                 startRadius: 0,
                 endRadius: 420

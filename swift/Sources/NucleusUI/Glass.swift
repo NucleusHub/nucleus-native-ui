@@ -17,7 +17,7 @@ private struct NucleusGlassModifier<S: Shape>: ViewModifier {
     @Environment(\.colorScheme) private var scheme
 
     func body(content: Content) -> some View {
-        let tint = scheme == .dark ? Color(hex: 0x0E0A1C, opacity: 0.35) : Color.white.opacity(0.25)
+        let tint = scheme == .dark ? Color(hex: 0x0E0A1C, opacity: 0.35).accentHue : Color.white.opacity(0.25)
         if #available(iOS 26, *) {
             content.glassEffect(interactive ? .regular.tint(tint).interactive() : .regular.tint(tint), in: shape)
         } else {
@@ -115,7 +115,7 @@ public struct NucleusPrimaryButtonStyle: ButtonStyle {
                 )
             }
             .overlay(Capsule().strokeBorder(.white.opacity(0.28), lineWidth: 1).blendMode(.overlay))
-            .shadow(color: (destructive ? Color(hex: 0xDC2626) : Color(hex: 0x4F46E5)).opacity(0.45), radius: 12, y: 6)
+            .shadow(color: (destructive ? Color(hex: 0xDC2626) : Color(hex: 0x4F46E5).accentHue).opacity(0.45), radius: 12, y: 6)
             .opacity(isEnabled ? 1 : 0.5)
             .scaleEffect(configuration.isPressed ? 0.97 : 1)
             .animation(.easeOut(duration: 0.16), value: configuration.isPressed)
